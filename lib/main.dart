@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:watercontrol/reservatory.dart';
+import 'package:watercontrol/reservatoryLevelLog.dart';
 import 'package:watercontrol/webservice.dart';
 
 void main() => runApp(MyApp());
@@ -70,6 +71,13 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
   }
 
   void _pushReservatoryDetails(Reservatory reservatory) {
+    String readingTime = "";
+    double level = 0;
+    Webservice().load(ReservatoryLevelLog.one).then((reservatoryLevelLog) =>{
+      readingTime = reservatoryLevelLog.readingTime,
+      level = reservatoryLevelLog.level
+      } );
+
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (BuildContext context) {
@@ -82,7 +90,7 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
                 children: [
                   Divider(),
                   ListTile(
-                    title: Text('Volume Reservatório: 50%',
+                    title: Text('Volume Reservatório: ' + level.toString() + "%",
                         style: TextStyle(fontWeight: FontWeight.w500)),
                     leading: Icon(
                       Icons.data_usage,
@@ -90,7 +98,7 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
                     ),
                   ),
                   ListTile(
-                    title: Text('Última atualização: 202020' ),
+                    title: Text('Última atualização: ' + readingTime ),
                     leading: Icon(
                       Icons.access_time_rounded,
                       color: Colors.blue[500],
