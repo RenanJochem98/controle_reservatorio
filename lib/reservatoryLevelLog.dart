@@ -20,7 +20,7 @@ class ReservatoryLevelLog {
   }
   
   String get formattedLevel {
-    return this.level != null ? NumberFormat("##0").format(this.level) + "%" : "(indisponível)";
+    return this.level != null ? NumberFormat("##0").format(this.level * 100) + "%" : "(indisponível)";
   }
 
   factory ReservatoryLevelLog.fromJson(Map<String, dynamic> json) {
