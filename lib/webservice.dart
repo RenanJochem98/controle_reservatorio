@@ -17,13 +17,4 @@ class Webservice {
       throw Exception('Failed to load data!');
     }
   }
-
-  Future<T> loadOne<T>(Resource<T> resource, int id) async {
-    final response = await http.get(Uri.parse(resource.url + id.toString()));
-    if (response.statusCode == 200) {
-      return resource.parse(response);
-    } else {
-      throw Exception('Failed to load data!');
-    }
-  }
 }

@@ -2,29 +2,34 @@ import 'dart:convert';
 
 import 'package:watercontrol/reservatory.dart';
 import 'package:watercontrol/webservice.dart';
+import 'package:intl/intl.dart';
 
 class ReservatoryLevelLog {
-  final String readingTime;
+  final DateTime readingTime;
   final double level;
-  // Reservatory reservatory;
+  Reservatory reservatory;
 
   ReservatoryLevelLog({
     this.readingTime,
     this.level,
-    // this.reservatory
+    this.reservatory
   });
+
+  String get formattedReadingTime {
+    return this.readingTime != null ? DateFormat('dd/MM/yyyy H:m:s').format(this.readingTime) : "";
+  }
 
   factory ReservatoryLevelLog.fromJson(Map<String, dynamic> json) {
     return ReservatoryLevelLog(
-      readingTime: json['readingTime'],
+      readingTime: json['readingTime'] == null ? null : DateTime.parse(json['readingTime']),
       level: json['level'],
-      // reservatory: json['reservatory']
+      reservatory: Reservatory.fromJson(json['reservatory'])
     );
   }
 
-  static Resource<ReservatoryLevelLog> get one {
+  static Resource<ReservatoryLevelLog> current(int id) {
     return Resource(
-        url: "http://flavio/watercontrol/api/reservatorylevellog/currentreservatory/1",
+        url: 'http://flavio/watercontrol/api/reservatorylevellog/currentreservatorylevel/$id',
         parse: (response) {
           final result = jsonDecode(response.body);
           return ReservatoryLevelLog.fromJson(result);

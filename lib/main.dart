@@ -71,44 +71,73 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
   }
 
   void _pushReservatoryDetails(Reservatory reservatory) {
-    String readingTime = "";
-    double level = 0;
-    Webservice().loadOne(ReservatoryLevelLog.one, reservatory.id).then((reservatoryLevelLog) =>{
-      readingTime = reservatoryLevelLog.readingTime,
-      level = reservatoryLevelLog.level
-      } );
-
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (BuildContext context) {
           return Scaffold(
-            appBar: AppBar(
-              title: Text('Detalhes do reservatório'),
-            ),
-            body:  Card(
-              child: Column(
-                children: [
-                  Divider(),
-                  ListTile(
-                    title: Text('Volume Reservatório: ' + level.toString() + "%",
-                        style: TextStyle(fontWeight: FontWeight.w500)),
-                    leading: Icon(
-                      Icons.data_usage,
-                      color: Colors.blue[500],
-                    ),
-                  ),
-                  ListTile(
-                    title: Text('Última atualização: ' + readingTime ),
-                    leading: Icon(
-                      Icons.access_time_rounded,
-                      color: Colors.blue[500],
-                    ),
-                  ),
-                ],
+              appBar: AppBar(
+                title: Text('Detalhes do reservatório'),
               ),
-            ),
-          );
+              body: ReservatoryDetail(reservatory: reservatory));
         },
+      ),
+    );
+  }
+}
+
+class ReservatoryDetail extends StatefulWidget {
+  final Reservatory reservatory;
+
+  const ReservatoryDetail({Key key, this.reservatory}) : super(key: key);
+
+  @override
+  _ReservatoryDetailState createState() =>
+      _ReservatoryDetailState(this.reservatory);
+}
+
+class _ReservatoryDetailState extends State<ReservatoryDetail> {
+  final Reservatory _reservatory;
+  ReservatoryLevelLog _reservatoryLevelLog = ReservatoryLevelLog();
+
+  _ReservatoryDetailState(this._reservatory);
+
+  @override
+  void initState() {
+    super.initState();
+    _populateCurrentReservatoryLevel();
+  }
+
+  void _populateCurrentReservatoryLevel() {
+    Webservice()
+        .load(ReservatoryLevelLog.current(_reservatory.id))
+        .then((reservatoryLevelLog) => {
+              setState(() => {_reservatoryLevelLog = reservatoryLevelLog})
+            });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: [
+          ListTile(title: Center(child: Text(_reservatory.name))),
+          ListTile(
+            title: Text('Volume Reservatório: ${_reservatoryLevelLog.level}%',
+                style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.data_usage,
+              color: Colors.blue[500],
+            ),
+          ),
+          ListTile(
+            title: Text(
+                'Última atualização: ${_reservatoryLevelLog.formattedReadingTime}'),
+            leading: Icon(
+              Icons.access_time_rounded,
+              color: Colors.blue[500],
+            ),
+          ),
+        ],
       ),
     );
   }
