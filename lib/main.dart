@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
-import 'package:http/http.dart' as http;
+import 'package:watercontrol/reservatory.dart';
+import 'package:watercontrol/webservice.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,105 +12,75 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Welcome to Flutter',
-      theme: ThemeData(
-        primaryColor: Colors.white,
-      ),
+      title: 'Controle de reservatórios',
       home: Scaffold(
         body: Center(
-          child: RandomWords(),
+          child: ReservatoriesList(),
         ),
       ),
     );
   }
 }
 
-class RandomWords extends StatefulWidget {
+class ReservatoriesList extends StatefulWidget {
   @override
-  _RandomWordsState createState() => _RandomWordsState();
+  _ReservatoriesListState createState() => _ReservatoriesListState();
 }
 
-class _RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _saved = <WordPair>{};
+class _ReservatoriesListState extends State<ReservatoriesList> {
+  var _reservatories = <Reservatory>[];
   final _biggerFont = TextStyle(fontSize: 18.0);
+
+  @override
+  void initState() {
+    super.initState();
+    _populateReservatories();
+  }
+
+  void _populateReservatories() {
+    Webservice().load(Reservatory.all).then((reservatories) => {
+          setState(() => {_reservatories = reservatories})
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Startup Name Generator'),
-        actions: [
-          IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
-        ],
+        title: Text('Controle de reservatórios'),
       ),
-      body: _buildSuggestions(),
+      body: _buildReservatories(),
     );
   }
 
-  void _pushSaved() {
+  Widget _buildReservatories() {
+    return ListView.builder(
+      itemCount: _reservatories.length,
+      itemBuilder: _buildItemsForListView,
+    );
+  }
+
+  ListTile _buildItemsForListView(BuildContext context, int index) {
+    Reservatory reservatory = _reservatories[index];
+    return ListTile(
+        title: Text(reservatory.name, style: _biggerFont),
+        onTap: () {
+          _pushReservatoryDetails(reservatory);
+        });
+  }
+
+  void _pushReservatoryDetails(Reservatory reservatory) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (BuildContext context) {
-          final tiles = _saved.map(
-            (WordPair pair) {
-              return ListTile(
-                title: Text(
-                  pair.asPascalCase,
-                  style: _biggerFont,
-                ),
-              );
-            },
-          );
-          final divided = tiles.isNotEmpty
-              ? ListTile.divideTiles(context: context, tiles: tiles).toList()
-              : <Widget>[];
-
           return Scaffold(
             appBar: AppBar(
-              title: Text('Saved Suggestions'),
+              title: Text('Detalhes do reservatório'),
             ),
-            body: ListView(children: divided),
+            body: Center(child: Text(reservatory.name)),
           );
         },
       ),
-    );
-  }
-
-  Widget _buildSuggestions() {
-    return ListView.builder(
-        padding: EdgeInsets.all(16.0),
-        itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return Divider(); /*2*/
-
-          final index = i ~/ 2; /*3*/
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10)); /*4*/
-          }
-          return _buildRow(_suggestions[index]);
-        });
-  }
-
-  Widget _buildRow(WordPair pair) {
-    final alreadySaved = _saved.contains(pair);
-    return ListTile(
-      title: Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ),
-      trailing: Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null,
-      ),
-      onTap: () {
-        setState(() {
-          if (alreadySaved) {
-            _saved.remove(pair);
-          } else {
-            _saved.add(pair);
-          }
-        });
-      },
     );
   }
 }

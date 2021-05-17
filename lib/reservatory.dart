@@ -1,9 +1,12 @@
+import 'dart:convert';
+
+import 'package:watercontrol/webservice.dart';
+
 class Reservatory {
   final int id;
   final String name;
   final bool active;
   final double maxLevelValue;
-
 
   Reservatory({
     this.id,
@@ -19,5 +22,15 @@ class Reservatory {
       active: json['active'],
       maxLevelValue: json['maxLevelValue'],
     );
+  }
+
+  static Resource<List<Reservatory>> get all {
+    return Resource(
+        url: "http://flavio/watercontrol/api/reservatory",
+        parse: (response) {
+          final result = jsonDecode(response.body);
+          Iterable list = result['reservatories'];
+          return list.map((model) => Reservatory.fromJson(model)).toList();
+        });
   }
 }
