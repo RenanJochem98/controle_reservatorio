@@ -73,7 +73,7 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
   void _pushReservatoryDetails(Reservatory reservatory) {
     String readingTime = "";
     double level = 0;
-    Webservice().load(ReservatoryLevelLog.one).then((reservatoryLevelLog) =>{
+    Webservice().loadOne(ReservatoryLevelLog.one, reservatory.id).then((reservatoryLevelLog) =>{
       readingTime = reservatoryLevelLog.readingTime,
       level = reservatoryLevelLog.level
       } );
