@@ -77,7 +77,28 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
             appBar: AppBar(
               title: Text('Detalhes do reservatório'),
             ),
-            body: Center(child: Text(reservatory.name)),
+            body:  Card(
+              child: Column(
+                children: [
+                  Divider(),
+                  ListTile(
+                    title: Text('Volume Reservatório: 50%',
+                        style: TextStyle(fontWeight: FontWeight.w500)),
+                    leading: Icon(
+                      Icons.data_usage,
+                      color: Colors.blue[500],
+                    ),
+                  ),
+                  ListTile(
+                    title: Text('Última atualização: 202020' ),
+                    leading: Icon(
+                      Icons.access_time_rounded,
+                      color: Colors.blue[500],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
