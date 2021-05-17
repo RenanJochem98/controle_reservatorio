@@ -18,6 +18,10 @@ class ReservatoryLevelLog {
   String get formattedReadingTime {
     return this.readingTime != null ? DateFormat('dd/MM/yyyy H:m:s').format(this.readingTime) : "";
   }
+  
+  String get formattedLevel {
+    return this.level != null ? NumberFormat("##0").format(this.level) + "%" : "(indisponível)";
+  }
 
   factory ReservatoryLevelLog.fromJson(Map<String, dynamic> json) {
     return ReservatoryLevelLog(

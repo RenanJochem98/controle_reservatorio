@@ -122,7 +122,7 @@ class _ReservatoryDetailState extends State<ReservatoryDetail> {
         children: [
           ListTile(title: Center(child: Text(_reservatory.name))),
           ListTile(
-            title: Text('Volume Reservatório: ${_reservatoryLevelLog.level}%',
+            title: Text('Volume Reservatório: ${_reservatoryLevelLog.formattedLevel}',
                 style: TextStyle(fontWeight: FontWeight.w500)),
             leading: Icon(
               Icons.data_usage,
