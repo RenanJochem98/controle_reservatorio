@@ -38,7 +38,7 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
     _populateReservatories();
   }
 
-  void _populateReservatories() {
+  Future<void> _populateReservatories() async {
     Webservice().load(Reservatory.all).then((reservatories) => {
           setState(() => {_reservatories = reservatories})
         });
@@ -47,11 +47,14 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Controle de reservatórios'),
-      ),
-      body: _buildReservatories(),
-    );
+        appBar: AppBar(
+          title: Text('Controle de reservatórios'),
+        ),
+        body: Center(
+            child: RefreshIndicator(
+          onRefresh: _populateReservatories,
+          child: _buildReservatories(),
+        )));
   }
 
   Widget _buildReservatories() {
@@ -65,6 +68,7 @@ class _ReservatoriesListState extends State<ReservatoriesList> {
     Reservatory reservatory = _reservatories[index];
     return ListTile(
         title: Text(reservatory.name, style: _biggerFont),
+        trailing: Icon(Icons.info_outline),
         onTap: () {
           _pushReservatoryDetails(reservatory);
         });
@@ -107,7 +111,7 @@ class _ReservatoryDetailState extends State<ReservatoryDetail> {
     _populateCurrentReservatoryLevel();
   }
 
-  void _populateCurrentReservatoryLevel() {
+  Future<void> _populateCurrentReservatoryLevel() async {
     Webservice()
         .load(ReservatoryLevelLog.current(_reservatory.id))
         .then((reservatoryLevelLog) => {
@@ -117,28 +121,33 @@ class _ReservatoryDetailState extends State<ReservatoryDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(title: Center(child: Text(_reservatory.name))),
-          ListTile(
-            title: Text('Volume Reservatório: ${_reservatoryLevelLog.formattedLevel}',
-                style: TextStyle(fontWeight: FontWeight.w500)),
-            leading: Icon(
-              Icons.data_usage,
-              color: Colors.blue[500],
-            ),
-          ),
-          ListTile(
-            title: Text(
-                'Última atualização: ${_reservatoryLevelLog.formattedReadingTime}'),
-            leading: Icon(
-              Icons.access_time_rounded,
-              color: Colors.blue[500],
-            ),
-          ),
-        ],
-      ),
-    );
+    return RefreshIndicator(
+        onRefresh: _populateCurrentReservatoryLevel,
+        child: ListView.builder(
+            itemCount: 1,
+            itemBuilder: (BuildContext context, int index) => Card(
+                  child: Column(
+                    children: [
+                      ListTile(title: Center(child: Text(_reservatory.name))),
+                      ListTile(
+                        title: Text(
+                            'Volume Reservatório: ${_reservatoryLevelLog.formattedLevel}',
+                            style: TextStyle(fontWeight: FontWeight.w500)),
+                        leading: Icon(
+                          Icons.data_usage,
+                          color: Colors.blue[500],
+                        ),
+                      ),
+                      ListTile(
+                        title: Text(
+                            'Última atualização: ${_reservatoryLevelLog.formattedReadingTime}'),
+                        leading: Icon(
+                          Icons.access_time_rounded,
+                          color: Colors.blue[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                )));
   }
 }

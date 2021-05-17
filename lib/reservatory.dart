@@ -26,7 +26,7 @@ class Reservatory {
 
   static Resource<List<Reservatory>> get all {
     return Resource(
-        url: "http://flavio/watercontrol/api/reservatory",
+        url: "http://10.0.2.2:80/watercontrol/api/reservatory",
         parse: (response) {
           final result = jsonDecode(response.body);
           Iterable list = result['reservatories'];

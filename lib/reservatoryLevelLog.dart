@@ -16,7 +16,7 @@ class ReservatoryLevelLog {
   });
 
   String get formattedReadingTime {
-    return this.readingTime != null ? DateFormat('dd/MM/yyyy H:m:s').format(this.readingTime) : "";
+    return this.readingTime != null ? DateFormat('dd/MM/yyyy H:m').format(this.readingTime) : "";
   }
   
   String get formattedLevel {
@@ -33,7 +33,7 @@ class ReservatoryLevelLog {
 
   static Resource<ReservatoryLevelLog> current(int id) {
     return Resource(
-        url: 'http://flavio/watercontrol/api/reservatorylevellog/currentreservatorylevel/$id',
+        url: 'http://10.0.2.2:80/watercontrol/api/reservatorylevellog/currentreservatorylevel/$id',
         parse: (response) {
           final result = jsonDecode(response.body);
           return ReservatoryLevelLog.fromJson(result);
