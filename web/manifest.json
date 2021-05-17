@@ -1,6 +1,6 @@
 {
-    "name": "controle_reservatorio",
-    "short_name": "controle_reservatorio",
+    "name": "watercontrol",
+    "short_name": "watercontrol",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

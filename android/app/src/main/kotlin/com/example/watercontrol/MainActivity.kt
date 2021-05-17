@@ -1,4 +1,4 @@
-package com.example.controle_reservatorio
+package com.example.watercontrol
 
 import io.flutter.embedding.android.FlutterActivity
 

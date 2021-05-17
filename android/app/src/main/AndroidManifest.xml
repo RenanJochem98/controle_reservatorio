@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.controle_reservatorio">
+    package="com.example.watercontrol">
+   <uses-permission android:name="android.permission.INTERNET" />
+   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
-        android:label="controle_reservatorio"
+        android:label="watercontrol"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
